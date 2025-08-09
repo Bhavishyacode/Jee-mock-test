@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTA JEE Main Mock Test</title>
+    <style>
+        /* === NTA Official Styles === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        .nta-header {
+            background-color: #0F4C81;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 4px solid #E53935;
+        }
+
+        .nta-logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nta-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            margin: 10px;
+            gap: 10px;
+        }
+
+        /* Left Panel - Question Palette */
+        .left-panel {
+            width: 200px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section-tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .section-tab {
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
+        .section-tab.active {
+            background-color: #0F4C81;
+            color: white;
+        }
+
+        .palette-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0F4C81;
+        }
+
+        .question-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .question-number {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .question-number:hover {
+            transform: scale(1.1);
+        }
+
+        .question-number.answered {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .question-number.marked {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .question-number.current {
+            border: 2px solid #0F4C81;
+            transform: scale(1.1);
+        }
+
+        /* Center Panel - Question Area */
+        .center-panel {
+            flex: 1;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Right Panel - Instructions */
+        .right-panel {
+            width: 250px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Test Info Bar */
+        .test-info {
+            background-color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 0 10px 10px 10px;
+            border-radius: 5px;
+            align-items: center;
+        }
+
+        .test-name {
+            font-weight: bold;
+            color: #0F4C81;
+            font-size: 1.1rem;
+        }
+
+        .download-btn {
+            background-color: #0F4C81;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #0D3D6B;
+        }
+
+        /* Candidate Info */
+        .candidate-info {
+            background-color: white;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .info-label {
+            width: 150px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .timer {
+            color: #E53935;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        /* Question Area */
+        .question-area {
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .question-text {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text strong {
+            color: #0F4C81;
+        }
+
+        .options-container {
+            margin-left: 15px;
+        }
+
+        .option-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option-box:hover {
+            border-color: #0F4C81;
+            background-color: #f8fafc;
+        }
+
+        .option-box.selected {
+            border-color: #0F4C81;
+            background-color: #E3F2FD;
+            box-shadow: 0 0 0 2px rgba(15, 76, 129, 0.2);
+        }
+
+        .option-number {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #0F4C81;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background-color: #0F4C81;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0D3D6B;
+        }
+
+        .btn-warning {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .btn-warning:hover {
+            background-color: #E6B000;
+        }
+
+        .btn-danger {
+            background-color: #E53935;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #C62828;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            margin: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .language-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #555;
+        }
+
+        select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+
+        /* Submit Button */
+        .submit-area {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .submit-btn {
+            padding: 10px 40px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* Instructions Panel */
+        .instructions-panel h3 {
+            color: #0F4C81;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .instructions-panel ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .instructions-panel li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        /* MathJax Overrides */
+        .MathJax {
+            font-size: 1.1em !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                width: auto;
+                margin-bottom: 15px;
+            }
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn-group {
+                justify-content: space-between;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- NTA Header -->
+    <div class="nta-header">
+        <div class="nta-logo">NATIONAL TESTING AGENCY</div>
+        <div class="nta-tagline">Excellence in Assessment</div>
+    </div>
+
+    <!-- Test Info -->
+    <div class="test-info">
+        <div class="test-name">JEE MAIN</div>
+        <div>
+            <button class="download-btn">
+                <i class="fas fa-download"></i> DOWNLOAD PAPER
+            </button>
+        </div>
+    </div>
+
+    <!-- Candidate Info -->
+    <div class="candidate-info">
+        <div class="info-row">
+            <div class="info-label">Candidate Name:</div>
+            <div class="info-value">[Your Name]</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Subject Name:</div>
+            <div class="info-value">[Test Practice]</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Remaining Time:</div>
+            <div class="info-value timer" id="timer">02:59:39</div>
+        </div>
+    </div>
+
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <label>Paper Language: </label>
+        <select id="language-select">
+            <option>English</option>
+            <option>Hindi</option>
+        </select>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Left Panel - Question Palette -->
+        <div class="left-panel">
+            <div class="section-tabs">
+                <div class="section-tab active" data-section="physics">Physics</div>
+                <div class="section-tab" data-section="chemistry">Chemistry</div>
+                <div class="section-tab" data-section="maths">Maths</div>
+            </div>
+            <div class="palette-title">Question Palette</div>
+            <div class="question-palette" id="questionPalette">
+                <!-- Question numbers will be added by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Center Panel - Question Area -->
+        <div class="center-panel">
+            <div class="question-area">
+                <div class="question-text" id="questionText">
+                    <!-- Question will be loaded here -->
+                </div>
+                <div class="options-container" id="options">
+                    <!-- Options will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="saveNext">
+                        <i class="fas fa-save"></i> SAVE & NEXT
+                    </button>
+                    <button class="btn btn-warning" id="markReviewNext">
+                        <i class="fas fa-flag"></i> MARK FOR REVIEW & NEXT
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-warning" id="saveMarkReview">
+                        <i class="fas fa-bookmark"></i> SAVE & MARK FOR REVIEW
+                    </button>
+                    <button class="btn btn-danger" id="clearResponse">
+                        <i class="fas fa-eraser"></i> CLEAR RESPONSE
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Instructions -->
+        <div class="right-panel instructions-panel">
+            <h3>Instructions</h3>
+            <ul>
+                <li>Total Time: 3 Hours</li>
+                <li>Total Questions: 75</li>
+                <li>Physics: 25 Questions</li>
+                <li>Chemistry: 25 Questions</li>
+                <li>Mathematics: 25 Questions</li>
+                <li>+4 for correct answer</li>
+                <li>-1 for incorrect answer</li>
+                <li>0 for unanswered</li>
+            </ul>
+            <h3>Keyboard Shortcuts</h3>
+            <ul>
+                <li><strong>Alt+N:</strong> Next Question</li>
+                <li><strong>Alt+P:</strong> Previous Question</li>
+                <li><strong>Alt+S:</strong> Save Answer</li>
+                <li><strong>Alt+R:</strong> Mark for Review</li>
+                <li><strong>Alt+C:</strong> Clear Response</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-area">
+        <button class="btn btn-danger submit-btn" id="submitTest">
+            <i class="fas fa-paper-plane"></i> SUBMIT
+        </button>
+    </div>
+
+    <script>
+        // Physics Questions from the PDF
+        const physicsQuestions = [
+            {
+                id: 1,
+                text: "The displacement of a particle is given by \( x = t^3 - 3t^2 + 4 \) (where \( x \) is in meters and \( t \) is in seconds). The acceleration of the particle at \( t = 1 \) s is:",
+                options: [
+                    "0 m/s²",
+                    "2 m/s²",
+                    "4 m/s²",
+                    "6 m/s²"
+                ],
+                correct: 3
+            },
+            {
+                id: 2,
+                text: "If the velocity \( v \) of a particle moving along a straight line decreases linearly with its displacement \( s \) as \( v = a - bs \), where \( a \) and \( b \) are constants, then the acceleration of the particle at \( s = 0 \) is:",
+                options: [
+                    "\( -b/2 \)",
+                    "\( -b \)",
+                    "\( -a \)",
+                    "\( -a/b \)"
+                ],
+                correct: 1
+            },
+            {
+                id: 3,
+                text: "The dimensional formula for the product of resistance and capacitance is:",
+                options: [
+                    "\( [M^0L^0T^0] \)",
+                    "\( [M^0L^0T^1] \)",
+                    "\( [ML^2T^{-2}] \)",
+                    "\( [M^{-1}L^{-2}T^4I^2] \)"
+                ],
+                correct: 1
+            },
+            {
+                id: 4,
+                text: "A block of mass \( m \) is placed on a rough inclined plane with coefficient of friction \( \mu \). The angle of inclination \( \theta \) is gradually increased. The block starts sliding at \( \theta = 30^\circ \). What is \( \mu \)?",
+                options: [
+                    "\( \frac{1}{\sqrt{3}} \)",
+                    "\( \frac{1}{2} \)",
+                    "\( \frac{\sqrt{3}}{2} \)",
+                    "\( \frac{1}{3} \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 5,
+                text: "A projectile is fired at an angle \( \theta \) with the horizontal. If the horizontal range is equal to the maximum height attained, then \( \theta \) is:",
+                options: [
+                    "\( \tan^{-1}(2) \)",
+                    "\( \tan^{-1}(4) \)",
+                    "\( 45^\circ \)",
+                    "\( 60^\circ \)"
+                ],
+                correct: 1
+            },
+            {
+                id: 6,
+                text: "A car accelerates from rest at a constant rate \( \alpha \) for some time and then decelerates at a constant rate \( \beta \) to come to rest. If the total time elapsed is \( t \), the maximum velocity attained is:",
+                options: [
+                    "\( \left( \frac{\alpha\beta}{\alpha+\beta} \right) t \)",
+                    "\( \left( \frac{\alpha+\beta}{\alpha\beta} \right) t \)",
+                    "\( \left( \frac{\alpha^2 + \beta^2}{\alpha\beta} \right) t \)",
+                    "\( \left( \frac{\alpha\beta t}{\alpha+\beta} \right) \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 7,
+                text: "A body of mass 2 kg is moving with a velocity 8 m/s on a smooth surface. If a force of 4 N is applied opposite to the direction of motion, the distance traveled before the body comes to rest is:",
+                options: [
+                    "8 m",
+                    "16 m",
+                    "4 m",
+                    "2 m"
+                ],
+                correct: 1
+            },
+            {
+                id: 8,
+                text: "A particle moves along the x-axis such that its position varies with time as \( x = 4t - t^2 \). The distance traveled in the first 3 seconds is:",
+                options: [
+                    "3 m",
+                    "5 m",
+                    "7 m",
+                    "9 m"
+                ],
+                correct: 2
+            },
+            {
+                id: 9,
+                text: "The force required to just move a body up an inclined plane is double the force required to just prevent it from sliding down. If the coefficient of friction is \( \mu \), then the angle of inclination \( \theta \) is:",
+                options: [
+                    "\( \tan^{-1}(3\mu) \)",
+                    "\( \tan^{-1}(2\mu) \)",
+                    "\( \tan^{-1}(\mu) \)",
+                    "\( \tan^{-1}(4\mu) \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 10,
+                text: "A train is moving with a speed of 30 m/s. When brakes are applied, it decelerates at 2 m/s². The distance it travels before stopping is:",
+                options: [
+                    "225 m",
+                    "200 m",
+                    "150 m",
+                    "100 m"
+                ],
+                correct: 0
+            },
+            {
+                id: 11,
+                text: "The position-time graph of a particle moving along a straight line is a parabola. The acceleration of the particle is:",
+                options: [
+                    "Zero",
+                    "Increasing with time",
+                    "Decreasing with time",
+                    "Constant"
+                ],
+                correct: 3
+            },
+            {
+                id: 12,
+                text: "A body is projected vertically upwards with a velocity \( u \). The ratio of the times taken to reach a height \( h \) while ascending and descending is:",
+                options: [
+                    "1",
+                    "\( \frac{u - \sqrt{u^2 - 2gh}}{u + \sqrt{u^2 - 2gh}} \)",
+                    "\( \frac{u + \sqrt{u^2 - 2gh}}{u - \sqrt{u^2 - 2gh}} \)",
+                    "\( \frac{u^2}{u^2 - 2gh} \)"
+                ],
+                correct: 1
+            },
+            {
+                id: 13,
+                text: "A block of mass \( m \) is placed on a rough horizontal surface. A force \( F = kt \) is applied at an angle \( \theta \) with the horizontal. The block starts moving when \( t = t_0 \). The coefficient of static friction \( \mu_s \) is:",
+                options: [
+                    "\( \frac{kt_0 \cos\theta}{mg - kt_0 \sin\theta} \)",
+                    "\( \frac{kt_0 \sin\theta}{mg} \)",
+                    "\( \frac{kt_0}{mg} \)",
+                    "\( \frac{mg}{kt_0 \cos\theta} \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 14,
+                text: "The dimensional formula for the universal gravitational constant \( G \) is:",
+                options: [
+                    "\( [M^{-1}L^3T^{-2}] \)",
+                    "\( [ML^2T^{-2}] \)",
+                    "\( [MLT^{-2}] \)",
+                    "\( [M^2L^{-2}T^{-1}] \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 15,
+                text: "A particle is moving along a circle of radius \( R \) with a constant speed \( v \). The magnitude of average acceleration after half a rotation is:",
+                options: [
+                    "\( \frac{v^2}{R} \)",
+                    "\( \frac{2v^2}{\pi R} \)",
+                    "\( \frac{v^2}{2R} \)",
+                    "0"
+                ],
+                correct: 1
+            },
+            {
+                id: 16,
+                text: "A block of mass \( m \) is pushed against a rough vertical wall with a force \( F \) at an angle \( \theta \). If the block does not slide, the frictional force is:",
+                options: [
+                    "\( F \cos\theta \)",
+                    "\( mg \)",
+                    "\( \mu F \sin\theta \)",
+                    "\( mg - F \sin\theta \)"
+                ],
+                correct: 3
+            },
+            {
+                id: 17,
+                text: "The velocity-time graph of a particle moving in a straight line is shown below. The displacement of the particle in 5 seconds is: (Graph: Linear increase from 0 to 10 m/s in 2 s, then constant velocity till 5 s)",
+                options: [
+                    "30 m",
+                    "40 m",
+                    "50 m",
+                    "60 m"
+                ],
+                correct: 1
+            },
+            {
+                id: 18,
+                text: "A body is projected with a velocity \( u \) at an angle \( \theta \) with the horizontal. The time after which its velocity is perpendicular to the initial velocity is:",
+                options: [
+                    "\( \frac{u}{g \sin\theta} \)",
+                    "\( \frac{u}{g \cos\theta} \)",
+                    "\( \frac{u}{g \tan\theta} \)",
+                    "\( \frac{u}{g \cot\theta} \)"
+                ],
+                correct: 0
+            },
+            {
+                id: 19,
+                text: "A particle moves along the x-axis with acceleration \( a = 6t - 4 \), where \( t \) is in seconds. If the initial velocity is 2 m/s, the velocity at \( t = 2 \) s is:",
+                options: [
+                    "4 m/s",
+                    "6 m/s",
+                    "8 m/s",
+                    "10 m/s"
+                ],
+                correct: 2
+            },
+            {
+                id: 20,
+                text: "A block of mass \( m \) is placed on an inclined plane of angle \( \theta \). If the block is in equilibrium, the frictional force acting on it is:",
+                options: [
+                    "\( \mu mg \cos\theta \)",
+                    "\( mg \sin\theta \)",
+                    "\( mg \cos\theta \)",
+                    "\( \mu mg \sin\theta \)"
+                ],
+                correct: 1
+            }
+        ];
+
+        // Sample Chemistry and Maths questions (to be expanded)
+        const chemistryQuestions = [
+            {
+                id: 1,
+                text: "The number of oxygen atoms in 4.4 g of CO₂ is:",
+                options: [
+                    "1.2 × 10²³",
+                    "6 × 10²²",
+                    "6 × 10²³",
+                    "1.2 × 10²⁴"
+                ],
+                correct: 1
+            }
+        ];
+
+        const mathsQuestions = [
+            {
+                id: 1,
+                text: "If \( \alpha \) and \( \beta \) are the roots of the equation \( x^2 - 6x + 2 = 0 \), then the value of \( (\alpha - \beta)^2 \) is:",
+                options: [
+                    "36",
+                    "28",
+                    "32",
+                    "24"
+                ],
+                correct: 1
+            }
+        ];
+
+        // Test State
+        const testState = {
+            currentSection: 'physics',
+            currentQuestion: 0,
+            answers: {},
+            marked: {},
+            timer: 3 * 60 * 60 - 21, // 2 hours 59 minutes 39 seconds
+            totalQuestions: {
+                physics: 20,
+                chemistry: 25,
+                maths: 25
+            }
+        };
+
+        // DOM Elements
+        const timerElement = document.getElementById('timer');
+        const questionTextElement = document.getElementById('questionText');
+        const optionsElement = document.getElementById('options');
+        const questionPaletteElement = document.getElementById('questionPalette');
+        const sectionTabs = document.querySelectorAll('.section-tab');
+        const languageSelect = document.getElementById('language-select');
+
+        // Buttons
+        const saveNextBtn = document.getElementById('saveNext');
+        const markReviewNextBtn = document.getElementById('markReviewNext');
+        const saveMarkReviewBtn = document.getElementById('saveMarkReview');
+        const clearResponseBtn = document.getElementById('clearResponse');
+        const submitTestBtn = document.getElementById('submitTest');
+
+        // Initialize the test
+        function initTest() {
+            // Initialize question palette
+            renderQuestionPalette();
+            
+            // Load first question
+            loadQuestion(testState.currentSection, testState.currentQuestion);
+            
+            // Start timer
+            startTimer();
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        // Get current questions based on section
+        function getCurrentQuestions() {
+            switch(testState.currentSection) {
+                case 'physics': return physicsQuestions;
+                case 'chemistry': return chemistryQuestions;
+                case 'maths': return mathsQuestions;
+                default: return physicsQuestions;
+            }
+        }
+
+        // Render question palette
+        function renderQuestionPalette() {
+            questionPaletteElement.innerHTML = '';
+            const total = testState.totalQuestions[testState.currentSection];
+            
+            for (let i = 0; i < total; i++) {
+                const questionNumber = document.createElement('div');
+                questionNumber.className = 'question-number';
+                if (i === testState.currentQuestion) {
+                    questionNumber.classList.add('current');
+                }
+                if (testState.answers[`${testState.currentSection}-${i}`] !== undefined) {
+                    questionNumber.classList.add('answered');
+                }
+                if (testState.marked[`${testState.currentSection}-${i}`]) {
+                    questionNumber.classList.add('marked');
+                }
+                questionNumber.textContent = i + 1;
+                questionNumber.addEventListener('click', () => {
+                    goToQuestion(i);
+                });
+                questionPaletteElement.appendChild(questionNumber);
+            }
+        }
+
+        // Load a question
+        function loadQuestion(section, index) {
+            const questions = getCurrentQuestions();
+            const questionIndex = index % questions.length;
+            const question = questions[questionIndex];
+            
+            // Update question text
+            questionTextElement.innerHTML = `<p><strong>Question ${index + 1}:</strong></p><p>${question.text}</p>`;
+            
+            // Update options
+            optionsElement.innerHTML = '';
+            question.options.forEach((option, i) => {
+                const optionBox = document.createElement('div');
+                optionBox.className = 'option-box';
+                if (testState.answers[`${section}-${index}`] === i) {
+                    optionBox.classList.add('selected');
+                }
+                
+                const optionNumber = document.createElement('span');
+                optionNumber.className = 'option-number';
+                optionNumber.textContent = `(${i+1})`;
+                
+                const optionText = document.createElement('span');
+                optionText.innerHTML = option;
+                
+                optionBox.appendChild(optionNumber);
+                optionBox.appendChild(optionText);
+                optionBox.addEventListener('click', () => {
+                    selectOption(i);
+                });
+                optionsElement.appendChild(optionBox);
+            });
+            
+            // Update current question in palette
+            updateCurrentQuestionInPalette();
+        }
+
+        // Update current question in palette
+        function updateCurrentQuestionInPalette() {
+            const questionNumbers = document.querySelectorAll('.question-number');
+            questionNumbers.forEach((num, i) => {
+                num.classList.remove('current');
+                if (i === testState.currentQuestion) {
+                    num.classList.add('current');
+                }
+            });
+        }
+
+        // Select an option
+        function selectOption(optionIndex) {
+            // Remove selection from all options
+            document.querySelectorAll('.option-box').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            document.querySelectorAll('.option-box')[optionIndex].classList.add('selected');
+            
+            // Save answer
+            testState.answers[`${testState.currentSection}-${testState.currentQuestion}`] = optionIndex;
+            
+            // Update palette
+            renderQuestionPalette();
+        }
+
+        // Go to a specific question
+        function goToQuestion(index) {
+            testState.currentQuestion = index;
+            loadQuestion(testState.currentSection, testState.currentQuestion);
+        }
+
+        // Next question
+        function nextQuestion() {
+            const total = testState.totalQuestions[testState.currentSection];
+            if (testState.currentQuestion < total - 1) {
+                testState.currentQuestion++;
+                loadQuestion(testState.currentSection, testState.currentQuestion);
+            }
+        }
+
+        // Previous question
+        function prevQuestion() {
+            if (testState.currentQuestion > 0) {
+                testState.currentQuestion--;
+                loadQuestion(testState.currentSection, testState.currentQuestion);
+            }
+        }
+
+        // Mark for review
+        function markForReview() {
+            const key = `${testState.currentSection}-${testState.currentQuestion}`;
+            testState.marked[key] = !testState.marked[key];
+            renderQuestionPalette();
+        }
+
+        // Clear response
+        function clearResponse() {
+            const key = `${testState.currentSection}-${testState.currentQuestion}`;
+            delete testState.answers[key];
+            document.querySelectorAll('.option-box').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            renderQuestionPalette();
+        }
+
+        // Change section
+        function changeSection(section) {
+            testState.currentSection = section;
+            testState.currentQuestion = 0;
+            
+            // Update active tab
+            sectionTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.section === section) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Load first question of new section
+            loadQuestion(testState.currentSection, testState.currentQuestion);
+            renderQuestionPalette();
+        }
+
+        // Start timer
+        function startTimer() {
+            updateTimerDisplay();
+            setInterval(() => {
+                testState.timer--;
+                updateTimerDisplay();
+                
+                if (testState.timer <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const hours = Math.floor(testState.timer / 3600);
+            const minutes = Math.floor((testState.timer % 3600) / 60);
+            const seconds = testState.timer % 60;
+            
+            timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Submit test
+        function submitTest() {
+            if (confirm("Are you sure you want to submit the test?")) {
+                // Calculate score
+                let score = 0;
+                let correct = 0;
+                let incorrect = 0;
+                let unanswered = 0;
+                
+                // Check all sections
+                ['physics', 'chemistry', 'maths'].forEach(section => {
+                    const questions = getCurrentQuestions();
+                    const total = testState.totalQuestions[section];
+                    
+                    for (let i = 0; i < total; i++) {
+                        const key = `${section}-${i}`;
+                        const userAnswer = testState.answers[key];
+                        const questionIndex = i % questions.length;
+                        const question = questions[questionIndex];
+                        
+                        if (userAnswer === undefined) {
+                            unanswered++;
+                        } else if (userAnswer === question.correct) {
+                            correct++;
+                            score += 4;
+                        } else {
+                            incorrect++;
+                            score -= 1;
+                        }
+                    }
+                });
+                
+                // Show results
+                alert(`Test submitted!\n\nScore: ${score}\nCorrect: ${correct}\nIncorrect: ${incorrect}\nUnanswered: ${unanswered}`);
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Section tabs
+            sectionTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    changeSection(tab.dataset.section);
+                });
+            });
+            
+            // Navigation buttons
+            saveNextBtn.addEventListener('click', () => {
+                const key = `${testState.currentSection}-${testState.currentQuestion}`;
+                const selectedOption = document.querySelector('.option-box.selected');
+                if (selectedOption) {
+                    const optionIndex = Array.from(document.querySelectorAll('.option-box')).indexOf(selectedOption);
+                    testState.answers[key] = optionIndex;
+                }
+                renderQuestionPalette();
+                nextQuestion();
+            });
+            
+            markReviewNextBtn.addEventListener('click', () => {
+                markForReview();
+                nextQuestion();
+            });
+            
+            saveMarkReviewBtn.addEventListener('click', () => {
+                const key = `${testState.currentSection}-${testState.currentQuestion}`;
+                const selectedOption = document.querySelector('.option-box.selected');
+                if (selectedOption) {
+                    const optionIndex = Array.from(document.querySelectorAll('.option-box')).indexOf(selectedOption);
+                    testState.answers[key] = optionIndex;
+                }
+                testState.marked[key] = true;
+                renderQuestionPalette();
+                nextQuestion();
+            });
+            
+            clearResponseBtn.addEventListener('click', () => {
+                clearResponse();
+            });
+            
+            submitTestBtn.addEventListener('click', () => {
+                submitTest();
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.altKey) {
+                    switch (e.key.toLowerCase()) {
+                        case 'n':
+                            nextQuestion();
+                            break;
+                        case 'p':
+                            prevQuestion();
+                            break;
+                        case 's':
+                            saveNextBtn.click();
+                            break;
+                        case 'r':
+                            markForReview();
+                            break;
+                        case 'c':
+                            clearResponse();
+                            break;
+                    }
+                }
+            });
+        }
+
+        // Initialize the test when page loads
+        window.onload = initTest;
+    </script>
+</body>
+  </html>
