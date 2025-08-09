@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEE Main Mock Test - NTA Format</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+    }
+    header {
+        background-color: #f57c00;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #container {
+        display: flex;
+        height: calc(100vh - 50px);
+    }
+    #left-panel {
+        width: 15%;
+        background: #fafafa;
+        padding: 10px;
+        border-right: 1px solid #ccc;
+    }
+    #question-area {
+        width: 60%;
+        padding: 20px;
+    }
+    #palette {
+        width: 25%;
+        padding: 10px;
+        background: #fff8f0;
+        border-left: 1px solid #ccc;
+    }
+    .btn {
+        padding: 5px 10px;
+        margin: 3px;
+        cursor: pointer;
+    }
+    .green { background: green; color: white; }
+    .purple { background: purple; color: white; }
+    .gray { background: gray; color: white; }
+    .red { background: red; color: white; }
+</style>
+</head>
+<body>
+
+<header>
+    JEE Main Mock Test - NTA Format
+    <span id="timer" style="float:right; margin-right: 20px;">Time left: 180:00</span>
+    <button id="pauseBtn" style="float:right; margin-right:10px;">Pause</button>
+</header>
+
+<div id="container">
+    <div id="left-panel">
+        <h4>Candidate Details</h4>
+        Name: Candidate<br>
+        Roll No: 123456<br>
+        Subject: PCM<br><br>
+        <h4>Sections</h4>
+        <button>Physics</button><br>
+        <button>Chemistry</button><br>
+        <button>Mathematics</button>
+    </div>
+
+    <div id="question-area">
+        <h3>Physics - Q1</h3>
+        <p>Placeholder Question</p>
+        <input type="radio" name="q1"> Option A<br>
+        <input type="radio" name="q1"> Option B<br>
+        <input type="radio" name="q1"> Option C<br>
+        <input type="radio" name="q1"> Option D<br><br>
+        <button class="btn">Previous</button>
+        <button class="btn">Next</button>
+        <button class="btn">Mark for Review</button>
+        <button class="btn">Clear Response</button>
+        <button class="btn">Submit</button>
+    </div>
+
+    <div id="palette">
+        <h4>Question Palette</h4>
+        <div>
+            <button class="btn green">1</button>
+            <button class="btn purple">2</button>
+            <button class="btn gray">3</button>
+            <button class="btn red">4</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let totalSeconds = 180 * 60;
+let paused = false;
+let timerInterval;
+
+function updateTimer() {
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+    document.getElementById('timer').textContent = 
+        `Time left: ${minutes}:${seconds.toString().padStart(2,'0')}`;
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        if (!paused && totalSeconds > 0) {
+            totalSeconds--;
+            updateTimer();
+        }
+    }, 1000);
+}
+
+document.getElementById('pauseBtn').addEventListener('click', () => {
+    paused = !paused;
+    document.getElementById('pauseBtn').textContent = paused ? "Resume" : "Pause";
+});
+
+updateTimer();
+startTimer();
+</script>
+
+</body>
+</html>
