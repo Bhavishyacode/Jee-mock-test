@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTA JEE Main Mock Test</title>
+    <style>
+        /* === NTA Official Styles === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        .nta-header {
+            background-color: #0F4C81;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-bottom: 4px solid #E53935;
+        }
+
+        .nta-logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nta-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Test Info Bar */
+        .test-info {
+            background-color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .test-name {
+            font-weight: bold;
+            color: #0F4C81;
+        }
+
+        .download-btn {
+            background-color: #0F4C81;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        /* Candidate Info */
+        .candidate-info {
+            background-color: white;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .timer {
+            color: #E53935;
+            font-weight: bold;
+        }
+
+        /* Question Area */
+        .question-area {
+            background-color: white;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            margin-left: 20px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #0F4C81;
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .btn-danger {
+            background-color: #E53935;
+            color: white;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            margin: 10px;
+        }
+
+        select {
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- NTA Header -->
+    <div class="nta-header">
+        <div class="nta-logo">NATIONAL TESTING AGENCY</div>
+        <div class="nta-tagline">Excellence in Assessment</div>
+    </div>
+
+    <!-- Test Info -->
+    <div class="test-info">
+        <div class="test-name">JEE MAIN</div>
+        <div>
+            <button class="download-btn">DOWNLOAD PAPER</button>
+        </div>
+    </div>
+
+    <!-- Candidate Info -->
+    <div class="candidate-info">
+        <div class="info-row">
+            <div class="info-label">Candidate Name:</div>
+            <div>[Your Name]</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Subject Name:</div>
+            <div>[Test Practice]</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Remaining Time:</div>
+            <div class="timer">02:59:39</div>
+        </div>
+    </div>
+
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <label>Paper Language: </label>
+        <select>
+            <option>English</option>
+            <option>Hindi</option>
+        </select>
+    </div>
+
+    <!-- Question Area -->
+    <div class="question-area">
+        <div class="question-text">
+            <p><strong>Question 1:</strong></p>
+            <p>The characteristic distance at which quantum gravitational effects are significant, the Planck length, can be determined from a suitable combination of the fundamental physical constants \( G \), \( h \) and \( c \). Which of the following correctly gives the Planck length ?</p>
+        </div>
+        <div class="options">
+            <div class="option">(1) \( G \, h^2 \, c^3 \)</div>
+            <div class="option">(2) \( G^2 \, h \, c \)</div>
+            <div class="option">(3) \( \sqrt{G \, h \, c^3} \)</div>
+            <div class="option">(4) \( \sqrt{\frac{G \, h}{c^3}} \)</div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <div>
+                <button class="btn btn-primary">SAVE & NEXT</button>
+                <button class="btn btn-warning">MARK FOR REVIEW & NEXT</button>
+            </div>
+            <div>
+                <button class="btn btn-warning">SAVE & MARK FOR REVIEW</button>
+                <button class="btn btn-danger">CLEAR RESPONSE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div style="text-align: center; margin: 20px;">
+        <button class="btn btn-danger" style="padding: 10px 30px;">SUBMIT</button>
+    </div>
+
+    <script>
+        // Timer functionality
+        function updateTimer() {
+            // Timer logic would go here
+        }
+
+        // Option selection
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.style.backgroundColor = '';
+                    opt.style.color = '';
+                });
+                this.style.backgroundColor = '#0F4C81';
+                this.style.color = 'white';
+            });
+        });
+    </script>
+</body>
+</html>
