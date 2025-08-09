@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEE Mains Mock Test</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #f0f2f5;
+    }
+    header {
+        background-color: #003366;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .container {
+        display: flex;
+        height: calc(100vh - 50px);
+    }
+    .question-panel {
+        flex: 3;
+        padding: 20px;
+        background-color: white;
+        overflow-y: auto;
+    }
+    .question {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    .submit-btn {
+        padding: 10px 20px;
+        background-color: #003366;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .submit-btn:hover {
+        background-color: #0055aa;
+    }
+    #result-section {
+        display: none;
+        padding: 20px;
+        background-color: white;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #003366;
+        color: white;
+    }
+    .correct {
+        color: green;
+        font-weight: bold;
+    }
+    .wrong {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<header>JEE Mains Mock Test</header>
+
+<div class="container">
+    <div class="question-panel" id="test-section">
+        <form id="jeeForm">
+
+            <!-- Physics Questions -->
+            <div class="question">
+                <p><b>Physics Q1:</b> The dimension of Planck's constant is:</p>
+                <label><input type="radio" name="q1" value="C"> M L<sup>2</sup> T<sup>-1</sup></label><br>
+                <label><input type="radio" name="q1" value="W"> M L<sup>2</sup> T<sup>-2</sup></label><br>
+                <label><input type="radio" name="q1" value="W2"> M L T<sup>-2</sup></label><br>
+                <label><input type="radio" name="q1" value="W3"> M<sup>0</sup> L<sup>0</sup> T<sup>0</sup></label>
+            </div>
+
+            <!-- Chemistry Questions -->
+            <div class="question">
+                <p><b>Chemistry Q1:</b> The number of moles in 22g of CO₂ is:</p>
+                <input type="number" step="0.01" name="q2">
+            </div>
+
+            <!-- Maths Questions -->
+            <div class="question">
+                <p><b>Maths Q1:</b> If A = {1, 2, 3}, n(A) is:</p>
+                <label><input type="radio" name="q3" value="3"> 3</label><br>
+                <label><input type="radio" name="q3" value="2"> 2</label><br>
+                <label><input type="radio" name="q3" value="4"> 4</label><br>
+                <label><input type="radio" name="q3" value="0"> 0</label>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="calculateScore()">Submit Test</button>
+        </form>
+    </div>
+</div>
+
+<div id="result-section">
+    <h2>Scorecard</h2>
+    <p><b>Physics Marks:</b> <span id="physics-marks"></span></p>
+    <p><b>Chemistry Marks:</b> <span id="chemistry-marks"></span></p>
+    <p><b>Maths Marks:</b> <span id="maths-marks"></span></p>
+    <p><b>Total Marks:</b> <span id="total-marks"></span> / 300</p>
+
+    <h3>Review Panel</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Correct Answer</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="review-table"></tbody>
+    </table>
+</div>
+
+<script>
+const answers = {
+    q1: "C", // Physics
+    q2: "0.5", // Chemistry
+    q3: "3" // Maths
+};
+
+function calculateScore() {
+    let physics = 0, chemistry = 0, maths = 0;
+
+    const formData = new FormData(document.getElementById('jeeForm'));
+    const reviewTable = document.getElementById('review-table');
+    reviewTable.innerHTML = "";
+
+    for (let key in answers) {
+        let userAns = formData.get(key);
+        let correctAns = answers[key];
+        let status = "";
+
+        let marks = 0;
+        let subject = "";
+
+        if (key === "q1") subject = "Physics";
+        if (key === "q2") subject = "Chemistry";
+        if (key === "q3") subject = "Maths";
+
+        // Numerical value check for q2
+        if (key === "q2") {
+            if (userAns === null || userAns.trim() === "") {
+                marks = 0;
+                status = "Unattempted";
+            } else if (parseFloat(userAns).toFixed(2) === parseFloat(correctAns).toFixed(2)) {
+                marks = 4;
+                status = "Correct";
+            } else {
+                marks = 0;
+                status = "Wrong";
+            }
+        } else {
+            if (!userAns) {
+                marks = 0;
+                status = "Unattempted";
+            } else if (userAns === correctAns) {
+                marks = 4;
+                status = "Correct";
+            } else {
+                marks = -1;
+                status = "Wrong";
+            }
+        }
+
+        if (subject === "Physics") physics += marks;
+        if (subject === "Chemistry") chemistry += marks;
+        if (subject === "Maths") maths += marks;
+
+        reviewTable.innerHTML += `<tr>
+            <td>${subject}</td>
+            <td>${key.toUpperCase()}</td>
+            <td>${userAns || "-"}</td>
+            <td>${correctAns}</td>
+            <td class="${status === "Correct" ? "correct" : (status === "Wrong" ? "wrong" : "")}">${status}</td>
+        </tr>`;
+    }
+
+    document.getElementById('physics-marks').textContent = physics;
+    document.getElementById('chemistry-marks').textContent = chemistry;
+    document.getElementById('maths-marks').textContent = maths;
+    document.getElementById('total-marks').textContent = physics + chemistry + maths;
+
+    document.getElementById('test-section').style.display = "none";
+    document.getElementById('result-section').style.display = "block";
+}
+</script>
+
+</body>
+</html>
