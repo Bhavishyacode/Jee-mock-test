@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEE Mains Mock Test</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    header {
+        background: #004080;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .container {
+        padding: 20px;
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        background: #004080;
+        color: white;
+        padding: 10px;
+        margin: 0 -20px 20px;
+    }
+    .question {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .options label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    button {
+        background: #004080;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    button:hover {
+        background: #00264d;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    JEE Mains Mock Test - Physics, Chemistry, Maths (25 Qs Each)
+</header>
+
+<div class="container">
+
+    <h2>Physics</h2>
+    <div id="physics"></div>
+
+    <h2>Chemistry</h2>
+    <div id="chemistry"></div>
+
+    <h2>Mathematics</h2>
+    <div id="maths"></div>
+
+    <button onclick="submitTest()">Submit Test</button>
+    <p id="result"></p>
+</div>
+
+<script>
+function createQuestions(subject, containerId) {
+    let container = document.getElementById(containerId);
+    for (let i = 1; i <= 25; i++) {
+        let qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `
+            <p><b>${subject} Q${i}:</b> Sample question text here.</p>
+            <div class="options">
+                <label><input type="radio" name="${subject}${i}"> Option A</label>
+                <label><input type="radio" name="${subject}${i}"> Option B</label>
+                <label><input type="radio" name="${subject}${i}"> Option C</label>
+                <label><input type="radio" name="${subject}${i}"> Option D</label>
+            </div>
+        `;
+        container.appendChild(qDiv);
+    }
+}
+
+function submitTest() {
+    document.getElementById("result").innerText =
+        "Your answers have been submitted. Scoring system can be added here.";
+}
+
+createQuestions("Physics", "physics");
+createQuestions("Chemistry", "chemistry");
+createQuestions("Maths", "maths");
+</script>
+
+</body>
+</html>
