@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JEE Mock Test — NTA Orange (Pause/Resume)</title>
+<style>
+:root{
+  --nta-orange: #f57c00;
+  --nta-dark: #0b3954;
+  --bg: #fff8f0;
+  --card: #ffffff;
+  --notvisited: #9e9e9e; /* gray */
+  --notanswered: #d32f2f; /* red */
+  --answered: #388e3c; /* green */
+  --marked: #7b1fa2; /* purple */
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#fff 0%, #fff8f0 100%);color:#14202b;-webkit-font-smoothing:antialiased}
+.header{background:var(--nta-orange);color:white;padding:10px 16px;display:flex;align-items:center;gap:16px}
+.brand{font-weight:700;font-size:16px}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.timer{background:rgba(0,0,0,0.08);padding:6px 10px;border-radius:6px;font-weight:700;color:#000}
+.pause-btn{background:white;color:var(--nta-orange);border-radius:6px;padding:6px 10px;border:0;cursor:pointer;font-weight:700}
+.container{display:grid;grid-template-columns:220px 1fr 300px;gap:12px;padding:12px;align-items:start}
+.card{background:var(--card);border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(11,57,84,0.06);min-height:70vh;overflow:auto}
+.left{grid-column:1}
+.main{grid-column:2;display:flex;flex-direction:column}
+.right{grid-column:3}
+.subject-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:8px 12px;border-radius:8px;background:#fff;border:1px solid rgba(11,57,84,0.06);cursor:pointer}
+.tab.active{background:var(--nta-orange);color:white;border-color:transparent}
+.question-box{padding:12px;border-radius:8px;border:1px solid #e6eef5;background:#fff;margin-bottom:12px}
+.question-title{font-weight:700;margin-bottom:8px;color:var(--nta-dark)}
+.options{display:grid;gap:10px}
+.opt{padding:12px;border-radius:8px;border:1px solid #e6eef5;background:#fff;cursor:pointer;text-align:left}
+.opt.selected{background:var(--nta-orange);color:white;border-color:transparent}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{padding:8px 12px;border-radius:8px;border:0;background:#eef6fb;color:var(--nta-dark);cursor:pointer}
+.btn.primary{background:var(--nta-dark);color:#fff}
+.palette{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
+.pnum{width:40px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-weight:700}
+.p-notvisited{background:var(--notvisited)}
+.p-notanswered{background:var(--notanswered)}
+.p-answered{background:var(--answered)}
+.p-marked{background:var(--marked)}
+.legend{margin-top:12px;font-size:13px}
+.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.legend-swatch{width:18px;height:18px;border-radius:4px}
+.section-info{font-size:14px;color:#333;margin-bottom:6px}
+
+/* responsive */
+@media(max-width:1000px){
+  .container{grid-template-columns:1fr;grid-auto-rows:min-content;padding:8px}
+  .left,.right,.main{min-height:auto}
+  .palette{grid-template-columns:repeat(8,1fr)}
+  .pnum{width:32px;height:30px;font-size:12px}
+  .header{flex-wrap:wrap}
+  .header-right{width:100%;justify-content:space-between}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">JEE Main Mock Test — NTA Style</div>
+  <div style="opacity:0.9">Physics | Chemistry | Mathematics — 25 Q each</div>
+  <div class="header-right">
+    <div style="font-size:13px;color:#fff">Candidate: <strong>Sample Student</strong></div>
+    <div class="timer" id="timer">3:00:00</div>
+    <button id="pauseBtn" class="pause-btn">Pause</button>
+  </div>
+</div>
+
+<div class="container">
+  <aside class="card left" aria-label="left panel">
+    <div style="font-weight:700;margin-bottom:8px">Candidate Details</div>
+    <div style="font-size:14px;color:#333">Name: <strong>Sample Student</strong></div>
+    <div style="font-size:14px;color:#333">Roll No: <strong>123456</strong></div>
+    <div style="font-size:14px;color:#333">Subject: <strong>PCM</strong></div>
+    <hr style="margin:10px 0;border-color:#f0e6de">
+    <div style="font-weight:700;margin-bottom:8px">Sections</div>
+    <div class="subject-tabs" id="subjectTabs">
+      <button class="tab active" data-sub="Physics">Physics</button>
+      <button class="tab" data-sub="Chemistry">Chemistry</button>
+      <button class="tab" data-sub="Maths">Mathematics</button>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:#333" id="sectionInfo">Questions 1 - 25</div>
+  </aside>
+
+  <main class="card main" aria-label="main panel">
+    <div id="questionArea">
+      <div class="question-box">
+        <div class="question-title" id="questionTitle">Select a section to start the test</div>
+        <div id="questionText" style="margin-bottom:10px"></div>
+        <div class="options" id="options"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:auto">
+      <div class="controls">
+        <button class="btn" id="saveNext">Save & Next</button>
+        <button class="btn" id="markNext">Mark for Review & Next</button>
+        <button class="btn" id="clearBtn">Clear Response</button>
+        <button class="btn primary" id="submitBtn">Submit</button>
+      </div>
+      <div style="margin-top:8px;font-size:13px;color:#444">Tip: Use palette to jump to any question. Pausing the timer will stop countdown until resumed.</div>
+    </div>
+  </main>
+
+  <aside class="card right" aria-label="right panel">
+    <div style="font-weight:700;margin-bottom:8px">Question Palette</div>
+    <div id="palette" class="palette" role="navigation" aria-label="Question palette"></div>
+
+    <div class="legend">
+      <div style="font-weight:700;margin-bottom:6px">Legend</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--notvisited)"></div> Not Visited</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--notanswered)"></div> Not Answered</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--answered)"></div> Answered</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--marked)"></div> Marked for Review</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// --- Questions (25 each) ---
+const physics = [
+{q:"A body of mass 2 kg moves with velocity 3 m/s. Its kinetic energy is:", opts:["3 J","6 J","9 J","18 J"], ans:2},
+{q:"The SI unit of force is:", opts:["Newton","Joule","Watt","Pascal"], ans:0},
+{q:"A car accelerates from rest to 20 m/s in 5 s. The acceleration is:", opts:["4 m/s²","5 m/s²","2 m/s²","10 m/s²"], ans:0},
+{q:"A sound wave of frequency 686 Hz travels at 343 m/s. Wavelength is:", opts:["2 m","0.5 m","1 m","5 m"], ans:1},
+{q:"The time period of a mass–spring system is:", opts:["2π√(k/m)","2π√(m/k)","k/m","m/k"], ans:1},
+{q:"Ohm’s law is given by:", opts:["I=V/R","V=IR","R=I/V","V=I/R"], ans:1},
+{q:"A projectile is launched at u = 10 m/s and θ = 45°. Range is:", opts:["5 m","10 m","15 m","20 m"], ans:1},
+{q:"The centripetal force for mass m, speed v, radius r is:", opts:["mv²r","mv/r","mv²/r","mvr"], ans:2},
+{q:"Potential energy of a mass m at height h is:", opts:["mgh","1/2 mv²","mg/h","mh/g"], ans:0},
+{q:"A resistor 6 Ω and 3 Ω are in series. Total resistance is:", opts:["2 Ω","3 Ω","6 Ω","9 Ω"], ans:3},
+{q:"The SI unit of power is:", opts:["Joule","Watt","Newton","Pascal"], ans:1},
+{q:"Light travels fastest in:", opts:["Water","Glass","Diamond","Air"], ans:3},
+{q:"The speed of light in vacuum is approximately:", opts:["3×10^8 m/s","3×10^6 m/s","3×10^5 m/s","3×10^4 m/s"], ans:0},
+{q:"Which quantity is a vector?", opts:["Speed","Distance","Displacement","Mass"], ans:2},
+{q:"The work done when force F moves a body through displacement s in direction of force:", opts:["F/s","F s","F + s","F − s"], ans:1},
+{q:"A wave has speed 20 m/s and wavelength 4 m. Frequency is:", opts:["5 Hz","4 Hz","8 Hz","10 Hz"], ans:0},
+{q:"The momentum of a 2 kg body moving at 4 m/s is:", opts:["2","4","6","8"], ans:3},
+{q:"Acceleration due to gravity on Earth’s surface is approximately:", opts:["9.8 m/s²","10.8 m/s²","8.9 m/s²","11.0 m/s²"], ans:0},
+{q:"In uniform circular motion, velocity is:", opts:["Constant in magnitude and direction","Constant in magnitude but changing direction","Changing magnitude but constant direction","Constant in both"], ans:1},
+{q:"A transformer works on the principle of:", opts:["Electrostatic induction","Electromagnetic induction","Heating effect","Chemical effect"], ans:1},
+{q:"Which type of mirror is used in vehicle headlights?", opts:["Plane","Convex","Concave","Cylindrical"], ans:2},
+{q:"A current of 2 A flows through a conductor for 3 s. Charge passed is:", opts:["1 C","3 C","6 C","9 C"], ans:2},
+{q:"In series connection of capacitors, the total capacitance is:", opts:["Sum of capacitances","Less than smallest capacitor","Greater than largest capacitor","Equal to average"], ans:1},
+{q:"The refractive index is given by:", opts:["n = v/c","n = c/v","n = c v","n = v − c"], ans:1},
+{q:"A ray of light passes from air to glass. It:", opts:["Speeds up","Slows down","Stops","Changes frequency"], ans:1}
+];
+
+const chemistry = [
+{q:"The molar mass of Na₂CO₃ is:", opts:["86 g/mol","106 g/mol","100 g/mol","96 g/mol"], ans:1},
+{q:"The oxidation state of sulfur in H₂SO₄ is:", opts:["+2","+4","+6","−2"], ans:2},
+{q:"Which of the following is a covalent compound?", opts:["NaCl","KBr","CH₄","MgO"], ans:2},
+{q:"The pH of a neutral solution at 25 °C is:", opts:["0","7","14","1"], ans:1},
+{q:"Which gas is liberated when zinc reacts with dilute HCl?", opts:["Oxygen","Hydrogen","Nitrogen","Carbon dioxide"], ans:1},
+{q:"Avogadro’s number is approximately:", opts:["6.02×10^23","3.00×10^8","1.60×10^−19","9.8"], ans:0},
+{q:"Which of the following is a strong acid?", opts:["H₂CO₃","CH₃COOH","HCl","NH₄OH"], ans:2},
+{q:"The electron configuration of oxygen is:", opts:["1s²2s²2p⁴","1s²2s²2p⁶","1s²2s²2p³","1s²2s²2p⁵"], ans:0},
+{q:"Which law states that equal volumes of gases at the same temperature and pressure contain equal numbers of molecules?", opts:["Boyle’s law","Avogadro’s law","Charles’ law","Dalton’s law"], ans:1},
+{q:"The SI unit of molar mass is:", opts:["mol/L","g/mol","mol/g","L/mol"], ans:1},
+{q:"Which of the following is an endothermic process?", opts:["Combustion of methane","Melting of ice","Condensation of steam","Neutralization"], ans:1},
+{q:"The hybridization of carbon in CH₄ is:", opts:["sp","sp²","sp³","sp³d"], ans:2},
+{q:"The common name of Ca(OH)₂ is:", opts:["Slaked lime","Quicklime","Lime stone","Gypsum"], ans:0},
+{q:"Which element has the smallest atomic radius?", opts:["Li","Na","K","F"], ans:3},
+{q:"The formula of potassium permanganate is:", opts:["KMnO₄","K₂MnO₄","K₂Mn₂O₇","KMn₂O₇"], ans:0},
+{q:"Which among these is an allotrope of carbon?", opts:["Graphite","NaCl","SiO₂","CaCO₃"], ans:0},
+{q:"The IUPAC name of CH₃CH₂OH is:", opts:["Methanol","Ethanol","Propanol","Butanol"], ans:1},
+{q:"In the periodic table, ionization energy generally:", opts:["Increases down a group","Decreases down a group","Remains same","Randomly changes"], ans:1},
+{q:"Which type of reaction is Zn + CuSO₄ → ZnSO₄ + Cu?", opts:["Combination","Decomposition","Displacement","Double displacement"], ans:2},
+{q:"The number of neutrons in ₆¹⁴C is:", opts:["6","8","14","12"], ans:1},
+{q:"The gas used in balloons because it is lighter than air is:", opts:["Hydrogen","Helium","Nitrogen","Oxygen"], ans:1},
+{q:"Which of the following is not an alkali metal?", opts:["Li","Na","K","Mg"], ans:3},
+{q:"The empirical formula of glucose (C₆H₁₂O₆) is:", opts:["CH₂O","C₆H₁₂O₆","C₂H₄O₂","C₃H₆O₃"], ans:0},
+{q:"Which of the following has the highest electronegativity?", opts:["O","N","Cl","F"], ans:3},
+{q:"Which is a noble gas?", opts:["He","N₂","CO₂","H₂"], ans:0}
+];
+
+const maths = [
+{q:"The value of lim_{x→0} (sin 3x)/x is:", opts:["1","3","0","Infinity"], ans:1},
+{q:"The derivative of sin²x is:", opts:["2 sin x cos x","cos²x","−sin²x","sin²x"], ans:0},
+{q:"If a, b are roots of x² − 5x + 6 = 0, then 1/a + 1/b equals:", opts:["5","3","1","5/6"], ans:3},
+{q:"The equation of the line through (1,2) perpendicular to 2x+3y−6=0 is:", opts:["3x−2y+1=0","2x+3y−8=0","3x+2y−7=0","2x−3y+4=0"], ans:0},
+{q:"The determinant |2 3; 4 5| equals:", opts:["2","-2","-2","10"], ans:1},
+{q:"If chord length =10 and distance from center =6, radius is:", opts:["5","6","8","7"], ans:2},
+{q:"(x² −5x +6)/(x² −4) simplifies to:", opts:["(x−2)/(x−3)","(x+2)/(x−2)","(x+2)/(x−3)","(x−2)/(x+3)"], ans:1},
+{q:"The derivative of e^{2x} cos x is:", opts:["e^{2x}(2 cos x − sin x)","e^{2x}(2 cos x + sin x)","e^{2x}(2 sin x + cos x)","e^{2x}(2 sin x − cos x)"], ans:0},
+{q:"Solve: log_2 x + log_2 (x−2) = 3", opts:["4","5","6","8"], ans:1},
+{q:"The sum of the infinite G.P. 5 + 2.5 + 1.25 + … is:", opts:["10","5","2.5","7.5"], ans:0},
+{q:"If z = 3 + 4i, then |z| equals:", opts:["5","7","25","1"], ans:0},
+{q:"The point of intersection of y = 2x + 3 and y = −x + 1 is:", opts:["(−2, −1)","(−1, 1)","(−1, 1)","(−2, −1)"], ans:0},
+{q:"If f(x) = √(x+4), domain is:", opts:["x ≥ 4","x ≥ −4","x > −4","all real x"], ans:1},
+{q:"The number of permutations of the letters of “BANANA” is:", opts:["60","120","360","720"], ans:0},
+{q:"If mean of 5 numbers is 10, sum is:", opts:["2","15","50","100"], ans:2},
+{q:"∫ 3x² dx is:", opts:["x³ + C","x³","x² + C","x⁴ + C"], ans:0},
+{q:"d/dx (x ln x) is:", opts:["ln x + 1","ln x","1/x + x","x ln x"], ans:0},
+{q:"Probability of getting head in one coin toss:", opts:["1","0","1/2","2"], ans:2},
+{q:"Mean of 2,4,6,8 is:", opts:["5","4","6","10"], ans:0},
+{q:"(x+y)² expands to:", opts:["x² + y²","x² + 2xy + y²","x² − 2xy + y²","x² − y²"], ans:1},
+{q:"If |x − 3| = 5, possible values of x are:", opts:["−2, 8","2, 8","−2, −8","2, −8"], ans:0},
+{q:"The slope of the line y = 3x − 7 is:", opts:["−7","3","1","0"], ans:1},
+{q:"If A = π r², then dA/dr is:", opts:["2πr","πr","2r","π r²"], ans:0},
+{q:"Solve: x² − 4x + 4 = 0", opts:["2","−2","4","0"], ans:0},
+{q:"Value of sin 45° is:", opts:["√3/2","√2/2","1","0"], ans:1}
+];
+
+// combine into flat array with bookkeeping
+const subjects = ['Physics','Chemistry','Maths'];
+const all = {Physics:physics, Chemistry:chemistry, Maths:maths};
+let flat = [];
+const subjectStart = {};
+subjects.forEach(s=>{ subjectStart[s]=flat.length; all[s].forEach(q=>flat.push(Object.assign({subject:s,user:null,marked:false,visited:false},q))); });
+
+// DOM refs
+const timerEl = document.getElementById('timer');
+const pauseBtn = document.getElementById('pauseBtn');
+const subjectTabs = document.getElementById('subjectTabs');
+const paletteEl = document.getElementById('palette');
+const questionTitle = document.getElementById('questionTitle');
+const questionText = document.getElementById('questionText');
+const optionsEl = document.getElementById('options');
+const sectionInfo = document.getElementById('sectionInfo');
+
+let currentIndex = 0;
+let currentSection = 'Physics';
+
+// subjects tab click behavior
+subjectTabs.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  const sub = btn.dataset.sub;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  currentSection = sub;
+  currentIndex = subjectStart[sub];
+  renderQuestion();
+  buildPalette();
+  updateSectionInfo();
+});
+
+function updateSectionInfo(){
+  const start = subjectStart[currentSection];
+  let end = start;
+  while(end+1 < flat.length && flat[end+1].subject === currentSection) end++;
+  sectionInfo.textContent = `Questions ${start+1} - ${end+1}`;
+}
+
+// build palette for current section
+function buildPalette(){
+  paletteEl.innerHTML = '';
+  const start = subjectStart[currentSection];
+  let end = start;
+  while(end+1 < flat.length && flat[end+1].subject === currentSection) end++;
+  for(let i=start;i<=end;i++){
+    const d = document.createElement('div');
+    d.className = 'pnum p-notvisited';
+    d.textContent = (i-start)+1;
+    d.dataset.idx = i;
+    if(flat[i].marked) d.className = 'pnum p-marked';
+    else if(flat[i].user !== null) d.className = 'pnum p-answered';
+    else if(flat[i].visited) d.className = 'pnum p-notanswered';
+    else d.className = 'pnum p-notvisited';
+    d.addEventListener('click', ()=>{ currentIndex = i; renderQuestion(); });
+    paletteEl.appendChild(d);
+  }
+}
+
+// render question
+function renderQuestion(){
+  const q = flat[currentIndex];
+  q.visited = true;
+  questionTitle.textContent = `${q.subject} - Q${ (currentIndex - subjectStart[q.subject]) + 1 }`;
+  questionText.textContent = q.q;
+  optionsEl.innerHTML = '';
+  q.opts.forEach((opt, idx)=>{
+    const btn = document.createElement('div');
+    btn.className = 'opt' + (q.user===idx ? ' selected' : '');
+    btn.innerHTML = `<strong>${String.fromCharCode(65+idx)}.</strong> ${opt}`;
+    btn.addEventListener('click', ()=>{ q.user = idx; buildPalette(); renderQuestion(); });
+    optionsEl.appendChild(btn);
+  });
+  buildPalette();
+  updateSectionInfo();
+}
+
+// controls
+document.getElementById('saveNext').addEventListener('click', ()=>{ if(currentIndex < flat.length-1) currentIndex++; renderQuestion(); });
+document.getElementById('markNext').addEventListener('click', ()=>{ flat[currentIndex].marked = true; if(currentIndex < flat.length-1) currentIndex++; renderQuestion(); });
+document.getElementById('clearBtn').addEventListener('click', ()=>{ flat[currentIndex].user = null; renderQuestion(); });
+document.getElementById('submitBtn').addEventListener('click', ()=>{ if(!confirm('Submit test?')) return; let attempted=0, marked=0; flat.forEach(q=>{ if(q.user!==null) attempted++; if(q.marked) marked++; }); alert(`Submitted!\\nAttempted: ${attempted}/${flat.length}\\nMarked for review: ${marked}`); });
+
+// timer with pause/resume
+let totalSec = 3*60*60;
+let paused = false;
+let timerInterval = null;
+
+function updateTimerDisplay(){
+  const h = Math.floor(totalSec/3600);
+  const m = Math.floor((totalSec%3600)/60);
+  const s = totalSec%60;
+  timerEl.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startTimer(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(!paused){
+      if(totalSec <= 0){
+        clearInterval(timerInterval);
+        alert('Time up! Auto-submitting...');
+        document.getElementById('submitBtn').click();
+        return;
+      }
+      totalSec--;
+      updateTimerDisplay();
+    }
+  },1000);
+}
+
+pauseBtn.addEventListener('click', ()=>{
+  paused = !paused;
+  pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+  // visual feedback: dim header when paused
+  document.querySelector('.header').style.opacity = paused ? '0.8' : '1';
+});
+
+// init
+if(subjectStart['Physics'] !== undefined) currentIndex = subjectStart['Physics']; else currentIndex = 0;
+renderQuestion();
+buildPalette();
+updateSectionInfo();
+updateTimerDisplay();
+startTimer();
+
+// expose for debugging
+window._jee = { flat, subjectStart, renderQuestion, buildPalette };
+
+</script>
+</body>
+</html>
