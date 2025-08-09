@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JEE Mains – Mock Test Portal</title>
+</head>
+<body>
+<script>
+// JEE Mains mock test configuration with 25 questions per subject.
+// Replace placeholders with actual JEE Mains–level questions (MCQ or numerical).
+const config = {
+  candidateName: 'Guest User',
+  testTitle: 'Custom JEE Mock Test – 25 Q per Subject',
+  totalDurationMin: 180,
+  sections: [
+    { id: 'physics', title: 'Physics', questions: Array.from({length:25}, (_,i)=>({ id:`p${i+1}`, text:`Physics Q${i+1} text here`, type: 'mcq', options:['Option 1','Option 2','Option 3','Option 4'], answer:0 })) },
+    { id: 'chemistry', title: 'Chemistry', questions: Array.from({length:25}, (_,i)=>({ id:`c${i+1}`, text:`Chemistry Q${i+1} text here`, type: 'mcq', options:['Option 1','Option 2','Option 3','Option 4'], answer:0 })) },
+    { id: 'maths', title: 'Mathematics', questions: Array.from({length:25}, (_,i)=>({ id:`m${i+1}`, text:`Maths Q${i+1} text here`, type: 'mcq', options:['Option 1','Option 2','Option 3','Option 4'], answer:0 })) }
+  ]
+};
+console.log('JEE Mock config ready', config);
+</script>
+</body>
+</html>
