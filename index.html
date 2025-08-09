@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JEE-like Mock Test — Fixed Responsive</title>
+  <style>
+    :root{
+      --nta-blue:#0b3954;
+      --nta-light:#f1f6f9;
+      --accent:#ff6f61;
+      --palette-answered:#ffd9cc;
+      --card-bg:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--nta-light);color:#111}
+    .container{
+      display:grid;
+      grid-template-columns: 300px 1fr 300px;
+      grid-template-areas: "left main right";
+      gap:12px;
+      padding:12px;
+      height:100vh;
+    }
+    .left{grid-area:left;background:var(--card-bg);border-radius:10px;padding:14px;overflow:auto;box-shadow:0 6px 18px rgba(11,57,84,0.06)}
+    .main{grid-area:main;background:var(--card-bg);border-radius:10px;padding:14px;overflow:auto;box-shadow:0 6px 18px rgba(11,57,84,0.06);display:flex;flex-direction:column}
+    .right{grid-area:right;background:var(--card-bg);border-radius:10px;padding:14px;overflow:auto;box-shadow:0 6px 18px rgba(11,57,84,0.06)}
+    header{display:flex;gap:10px;align-items:center}
+    header .logo{width:48px;height:48px;background:var(--nta-blue);border-radius:6px}
+    header h1{font-size:16px;margin:0;color:var(--nta-blue)}
+    .timer{font-weight:700;color:var(--nta-blue);font-size:20px;margin-top:8px}
+    .palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+    .qnum{width:44px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#eef6fb;color:var(--nta-blue);cursor:pointer;border:1px solid rgba(11,57,84,0.06);user-select:none}
+    .qnum.ans{background:var(--palette-answered);color:#000}
+    .qnum.marked{outline:3px dashed #ffd9cc}
+    .subject-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+    .subject-tab{padding:8px 12px;border-radius:8px;cursor:pointer;background:#eef6fb;color:var(--nta-blue);border:0}
+    .question{font-size:16px;margin-bottom:12px;min-height:60px}
+    .options{display:grid;gap:10px}
+    .opt{padding:12px;border-radius:8px;border:1px solid #e6eef5;cursor:pointer;background:#fff}
+    .opt.selected{background:var(--accent);color:#fff;border-color:transparent}
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .navs{display:flex;gap:8px;flex-wrap:wrap}
+    button{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;background:#e9eef3;color:var(--nta-blue)}
+    .btn-primary{background:var(--nta-blue);color:#fff}
+    .legend-item{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .legend-swatch{width:18px;height:18px;border-radius:4px;border:1px solid rgba(11,57,84,0.06)}
+    /* Mobile: stack columns with main first */
+    @media (max-width: 900px){
+      .container{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "main"
+          "left"
+          "right";
+        height: auto;
+      }
+      .left, .right, .main{height:auto;max-height:none}
+      .palette{grid-template-columns:repeat(6,1fr)}
+      .qnum{width:36px;height:34px}
+      .options{gap:8px}
+      .opt{padding:10px;font-size:15px}
+      header h1{font-size:14px}
+      .timer{font-size:18px}
+      footer{gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="left">
+      <header>
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>JEE Mock Test — Custom</h1>
+          <div style="font-size:13px;color:#333">Physics | Chemistry | Maths — 25 Q each</div>
+        </div>
+      </header>
+
+      <div style="margin-top:12px">Time Remaining</div>
+      <div class="timer" id="timer">3:00:00</div>
+
+      <div style="margin-top:12px">Question Palette</div>
+      <div class="palette" id="palette" role="navigation" aria-label="Question palette"></div>
+    </aside>
+
+    <main class="main">
+      <div class="subject-tabs" id="subjectTabs" role="tablist">
+        <button class="subject-tab" data-sub="Physics">Physics</button>
+        <button class="subject-tab" data-sub="Chemistry">Chemistry</button>
+        <button class="subject-tab" data-sub="Maths">Maths</button>
+      </div>
+
+      <div class="question-area" style="flex:1;display:flex;flex-direction:column">
+        <div class="question" id="questionText">Select a subject to start the test.</div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <footer>
+        <div class="navs">
+          <button id="prevBtn">Previous</button>
+          <button id="nextBtn">Next</button>
+          <button id="markBtn">Mark for Review</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="clearBtn">Clear Answer</button>
+          <button id="submitBtn" class="btn-primary">Submit</button>
+        </div>
+      </footer>
+    </main>
+
+    <aside class="right">
+      <h3>Legend</h3>
+      <div style="margin-top:8px">
+        <div class="legend-item"><span class="legend-swatch" style="background:#eef6fb"></span> Not Answered</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--palette-answered)"></span> Answered</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#fff0f0"></span> Marked</div>
+      </div>
+      <hr style="margin:12px 0;border-color:#eef6fb" />
+      <div style="font-size:13px;color:#444">Controls</div>
+      <ul style="font-size:13px;color:#444;padding-left:18px;margin-top:8px">
+        <li>Tap question number to jump</li>
+        <li>Tap an option to select</li>
+        <li>Use Mark for Review to flag</li>
+      </ul>
+    </aside>
+  </div>
+
+  <script>
+    // --- Questions (75 total) ---
+    const chemistry = [
+{q:"The molar mass of Na₂CO₃ is:", opts:["86 g/mol","106 g/mol","100 g/mol","96 g/mol"], ans:1},
+{q:"The oxidation state of sulfur in H₂SO₄ is:", opts:["+2","+4","+6","−2"], ans:2},
+{q:"Which of the following is a covalent compound?", opts:["NaCl","KBr","CH₄","MgO"], ans:2},
+{q:"The pH of a neutral solution at 25 °C is:", opts:["0","7","14","1"], ans:1},
+{q:"Which gas is liberated when zinc reacts with dilute HCl?", opts:["Oxygen","Hydrogen","Nitrogen","Carbon dioxide"], ans:1},
+{q:"Avogadro’s number is approximately:", opts:["6.02×10^23","3.00×10^8","1.60×10^−19","9.8"], ans:0},
+{q:"Which of the following is a strong acid?", opts:["H₂CO₃","CH₃COOH","HCl","NH₄OH"], ans:2},
+{q:"The electron configuration of oxygen is:", opts:["1s²2s²2p⁴","1s²2s²2p⁶","1s²2s²2p³","1s²2s²2p⁵"], ans:0},
+{q:"Which law states that equal volumes of gases at the same temperature and pressure contain equal numbers of molecules?", opts:["Boyle’s law","Avogadro’s law","Charles’ law","Dalton’s law"], ans:1},
+{q:"The SI unit of molar mass is:", opts:["mol/L","g/mol","mol/g","L/mol"], ans:1},
+{q:"Which of the following is an endothermic process?", opts:["Combustion of methane","Melting of ice","Condensation of steam","Neutralization"], ans:1},
+{q:"The hybridization of carbon in CH₄ is:", opts:["sp","sp²","sp³","sp³d"], ans:2},
+{q:"The common name of Ca(OH)₂ is:", opts:["Slaked lime","Quicklime","Lime stone","Gypsum"], ans:0},
+{q:"Which element has the smallest atomic radius?", opts:["Li","Na","K","F"], ans:3},
+{q:"The formula of potassium permanganate is:", opts:["KMnO₄","K₂MnO₄","K₂Mn₂O₇","KMn₂O₇"], ans:0},
+{q:"Which among these is an allotrope of carbon?", opts:["Graphite","NaCl","SiO₂","CaCO₃"], ans:0},
+{q:"The IUPAC name of CH₃CH₂OH is:", opts:["Methanol","Ethanol","Propanol","Butanol"], ans:1},
+{q:"In the periodic table, ionization energy generally:", opts:["Increases down a group","Decreases down a group","Remains same","Randomly changes"], ans:1},
+{q:"Which type of reaction is Zn + CuSO₄ → ZnSO₄ + Cu?", opts:["Combination","Decomposition","Displacement","Double displacement"], ans:2},
+{q:"The number of neutrons in ₆¹⁴C is:", opts:["6","8","14","12"], ans:1},
+{q:"The gas used in balloons because it is lighter than air is:", opts:["Hydrogen","Helium","Nitrogen","Oxygen"], ans:1},
+{q:"Which of the following is not an alkali metal?", opts:["Li","Na","K","Mg"], ans:3},
+{q:"The empirical formula of glucose (C₆H₁₂O₆) is:", opts:["CH₂O","C₆H₁₂O₆","C₂H₄O₂","C₃H₆O₃"], ans:0},
+{q:"Which of the following has the highest electronegativity?", opts:["O","N","Cl","F"], ans:3},
+{q:"Which is a noble gas?", opts:["He","N₂","CO₂","H₂"], ans:0}
+];
+
+    const physics = [
+{q:"A body of mass 2 kg moves with velocity 3 m/s. Its kinetic energy is:", opts:["3 J","6 J","9 J","18 J"], ans:2},
+{q:"The SI unit of force is:", opts:["Newton","Joule","Watt","Pascal"], ans:0},
+{q:"A car accelerates from rest to 20 m/s in 5 s. The acceleration is:", opts:["4 m/s²","5 m/s²","2 m/s²","10 m/s²"], ans:0},
+{q:"A sound wave of frequency 686 Hz travels at 343 m/s. Wavelength is:", opts:["2 m","0.5 m","1 m","5 m"], ans:1},
+{q:"The time period of a mass–spring system is:", opts:["2π√(k/m)","2π√(m/k)","k/m","m/k"], ans:1},
+{q:"Ohm’s law is given by:", opts:["I=V/R","V=IR","R=I/V","V=I/R"], ans:1},
+{q:"A projectile is launched at u = 10 m/s and θ = 45°. Range is:", opts:["5 m","10 m","15 m","20 m"], ans:1},
+{q:"The centripetal force for mass m, speed v, radius r is:", opts:["mv²r","mv/r","mv²/r","mvr"], ans:2},
+{q:"Potential energy of a mass m at height h is:", opts:["mgh","1/2 mv²","mg/h","mh/g"], ans:0},
+{q:"A resistor 6 Ω and 3 Ω are in series. Total resistance is:", opts:["2 Ω","3 Ω","6 Ω","9 Ω"], ans:3},
+{q:"The SI unit of power is:", opts:["Joule","Watt","Newton","Pascal"], ans:1},
+{q:"Light travels fastest in:", opts:["Water","Glass","Diamond","Air"], ans:3},
+{q:"The speed of light in vacuum is approximately:", opts:["3×10^8 m/s","3×10^6 m/s","3×10^5 m/s","3×10^4 m/s"], ans:0},
+{q:"Which quantity is a vector?", opts:["Speed","Distance","Displacement","Mass"], ans:2},
+{q:"The work done when force F moves a body through displacement s in direction of force:", opts:["F/s","F s","F + s","F − s"], ans:1},
+{q:"A wave has speed 20 m/s and wavelength 4 m. Frequency is:", opts:["5 Hz","4 Hz","8 Hz","10 Hz"], ans:0},
+{q:"The momentum of a 2 kg body moving at 4 m/s is:", opts:["2","4","6","8"], ans:3},
+{q:"Acceleration due to gravity on Earth’s surface is approximately:", opts:["9.8 m/s²","10.8 m/s²","8.9 m/s²","11.0 m/s²"], ans:0},
+{q:"In uniform circular motion, velocity is:", opts:["Constant in magnitude and direction","Constant in magnitude but changing direction","Changing magnitude but constant direction","Constant in both"], ans:1},
+{q:"A transformer works on the principle of:", opts:["Electrostatic induction","Electromagnetic induction","Heating effect","Chemical effect"], ans:1},
+{q:"Which type of mirror is used in vehicle headlights?", opts:["Plane","Convex","Concave","Cylindrical"], ans:2},
+{q:"A current of 2 A flows through a conductor for 3 s. Charge passed is:", opts:["1 C","3 C","6 C","9 C"], ans:2},
+{q:"In series connection of capacitors, the total capacitance is:", opts:["Sum of capacitances","Less than smallest capacitor","Greater than largest capacitor","Equal to average"], ans:1},
+{q:"The refractive index is given by:", opts:["n = v/c","n = c/v","n = c v","n = v − c"], ans:1},
+{q:"A ray of light passes from air to glass. It:", opts:["Speeds up","Slows down","Stops","Changes frequency"], ans:1}
+];
+
+    const maths = [
+{q:"The value of lim_{x→0} (sin 3x)/x is:", opts:["1","3","0","Infinity"], ans:1},
+{q:"The derivative of sin²x is:", opts:["2 sin x cos x","cos²x","−sin²x","sin²x"], ans:0},
+{q:"If a, b are roots of x² − 5x + 6 = 0, then 1/a + 1/b equals:", opts:["5","3","1","5/6"], ans:3},
+{q:"The equation of the line through (1,2) perpendicular to 2x+3y−6=0 is:", opts:["3x−2y+1=0","2x+3y−8=0","3x+2y−7=0","2x−3y+4=0"], ans:0},
+{q:"The determinant |2 3; 4 5| equals:", opts:["2","-2","-2","10"], ans:1},
+{q:"If chord length =10 and distance from center =6, radius is:", opts:["5","6","8","7"], ans:2},
+{q:"(x² −5x +6)/(x² −4) simplifies to:", opts:["(x−2)/(x−3)","(x+2)/(x−2)","(x+2)/(x−3)","(x−2)/(x+3)"], ans:1},
+{q:"The derivative of e^{2x} cos x is:", opts:["e^{2x}(2 cos x − sin x)","e^{2x}(2 cos x + sin x)","e^{2x}(2 sin x + cos x)","e^{2x}(2 sin x − cos x)"], ans:0},
+{q:"Solve: log_2 x + log_2 (x−2) = 3", opts:["4","5","6","8"], ans:1},
+{q:"The sum of the infinite G.P. 5 + 2.5 + 1.25 + … is:", opts:["10","5","2.5","7.5"], ans:0},
+{q:"If z = 3 + 4i, then |z| equals:", opts:["5","7","25","1"], ans:0},
+{q:"The point of intersection of y = 2x + 3 and y = −x + 1 is:", opts:["(−2, −1)","(−1, 1)","(−1, 1)","(−2, −1)"], ans:0},
+{q:"If f(x) = √(x+4), domain is:", opts:["x ≥ 4","x ≥ −4","x > −4","all real x"], ans:1},
+{q:"The number of permutations of the letters of “BANANA” is:", opts:["60","120","360","720"], ans:0},
+{q:"If mean of 5 numbers is 10, sum is:", opts:["2","15","50","100"], ans:2},
+{q:"∫ 3x² dx is:", opts:["x³ + C","x³","x² + C","x⁴ + C"], ans:0},
+{q:"d/dx (x ln x) is:", opts:["ln x + 1","ln x","1/x + x","x ln x"], ans:0},
+{q:"Probability of getting head in one coin toss:", opts:["1","0","1/2","2"], ans:2},
+{q:"Mean of 2,4,6,8 is:", opts:["5","4","6","10"], ans:0},
+{q:"(x+y)² expands to:", opts:["x² + y²","x² + 2xy + y²","x² − 2xy + y²","x² − y²"], ans:1},
+{q:"If |x − 3| = 5, possible values of x are:", opts:["−2, 8","2, 8","−2, −8","2, −8"], ans:0},
+{q:"The slope of the line y = 3x − 7 is:", opts:["−7","3","1","0"], ans:1},
+{q:"If A = π r², then dA/dr is:", opts:["2πr","πr","2r","π r²"], ans:0},
+{q:"Solve: x² − 4x + 4 = 0", opts:["2","−2","4","0"], ans:0},
+{q:"Value of sin 45° is:", opts:["√3/2","√2/2","1","0"], ans:1}
+];
+
+    // --- combine questions preserving subject mark ---
+    const subjects = ['Physics','Chemistry','Maths'];
+    const all = {Physics:physics,Chemistry:chemistry,Maths:maths};
+    const flatQuestions = [];
+    // Build flatQuestions and also record subjectStartIndices for quick jump
+    const subjectStart = {};
+    subjects.forEach((s)=>{
+      subjectStart[s] = flatQuestions.length;
+      all[s].forEach((qq)=>{
+        flatQuestions.push(Object.assign({subject:s, user:null, marked:false}, qq));
+      });
+    });
+
+    // --- DOM elements ---
+    const paletteEl = document.getElementById('palette');
+    const qTextEl = document.getElementById('questionText');
+    const optsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+
+    // --- Build palette ---
+    function buildPalette(){
+      paletteEl.innerHTML='';
+      flatQuestions.forEach((q, idx)=>{
+        const d = document.createElement('div');
+        d.className = 'qnum';
+        d.textContent = idx+1;
+        d.dataset.idx = idx;
+        d.title = `${q.subject} — Q${ (idx - subjectStart[q.subject]) + 1 }`;
+        d.addEventListener('click', ()=> goTo(idx) );
+        paletteEl.appendChild(d);
+      });
+      updatePalette();
+    }
+
+    // --- Rendering question ---
+    let currentIdx = 0;
+    function renderQuestion(){
+      const q = flatQuestions[currentIdx];
+      qTextEl.innerHTML = `<strong>Q${(currentIdx+1)} (${q.subject})</strong> — ${q.q}`;
+      optsEl.innerHTML = '';
+      q.opts.forEach((opt, i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.type = 'button';
+        btn.innerHTML = `<strong>${['A','B','C','D'][i]}.</strong> ${opt}`;
+        if(q.user === i) btn.classList.add('selected');
+        btn.addEventListener('click', ()=> {
+          q.user = i;
+          updatePalette();
+          renderQuestion();
+        });
+        optsEl.appendChild(btn);
+      });
+      // ensure palette highlight and mark outline
+      updatePalette();
+      // scroll question into view on mobile
+      qTextEl.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    function updatePalette(){
+      document.querySelectorAll('.qnum').forEach((el, idx)=>{
+        el.classList.toggle('ans', !!flatQuestions[idx].user);
+        el.classList.toggle('marked', !!flatQuestions[idx].marked);
+      });
+    }
+
+    // --- Navigation functions ---
+    function goTo(idx){
+      if(idx < 0 || idx >= flatQuestions.length) return;
+      currentIdx = idx;
+      renderQuestion();
+    }
+    function prevQuestion(){ if(currentIdx>0) goTo(currentIdx-1); }
+    function nextQuestion(){ if(currentIdx<flatQuestions.length-1) goTo(currentIdx+1); }
+    function markForReview(){ flatQuestions[currentIdx].marked = !flatQuestions[currentIdx].marked; updatePalette(); }
+
+    function clearAnswer(){
+      flatQuestions[currentIdx].user = null;
+      updatePalette();
+      renderQuestion();
+    }
+
+    function submitTest(){
+      if(!confirm('Submit test? You cannot change answers after submitting.')) return;
+      let score = 0, attempted = 0, correct = 0, scorable = 0;
+      flatQuestions.forEach(q => {
+        if(q.ans!==null && q.ans!==undefined) scorable++;
+        if(q.user !== null && q.user !== undefined){
+          attempted++;
+          if(q.ans!==null && q.ans!==undefined){
+            if(q.user === q.ans){ score += 4; correct++; }
+            else{ score -= 1; }
+          }
+        }
+      });
+      alert(`Score: ${score}\nCorrect: ${correct}\nAttempted: ${attempted}/${flatQuestions.length}\nScorable Questions: ${scorable}/${flatQuestions.length}`);
+    }
+
+    // --- Subject quick jump ---
+    document.getElementById('subjectTabs').addEventListener('click', (e)=>{
+      const btn = e.target.closest('.subject-tab');
+      if(!btn) return;
+      const sub = btn.dataset.sub;
+      if(sub && subjectStart[sub] !== undefined) goTo(subjectStart[sub]);
+    });
+
+    // --- Buttons binding ---
+    document.getElementById('prevBtn').addEventListener('click', prevQuestion);
+    document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+    document.getElementById('markBtn').addEventListener('click', markForReview);
+    document.getElementById('clearBtn').addEventListener('click', clearAnswer);
+    document.getElementById('submitBtn').addEventListener('click', submitTest);
+
+    // --- Timer ---
+    let totalSec = 3*60*60;
+    let timerInterval = setInterval(()=>{
+      if(totalSec <= 0){
+        clearInterval(timerInterval);
+        alert('Time up — auto submitting');
+        submitTest(); return;
+      }
+      totalSec--;
+      const h = Math.floor(totalSec/3600);
+      const m = Math.floor((totalSec%3600)/60);
+      const s = totalSec%60;
+      timerEl.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    },1000);
+
+    // --- Init ---
+    buildPalette();
+    // open Chemistry by default (like earlier)
+    if(subjectStart['Chemistry']!==undefined) goTo(subjectStart['Chemistry']); else goTo(0);
+  </script>
+</body>
+</html>
