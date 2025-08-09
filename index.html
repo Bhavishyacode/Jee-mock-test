@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEE Mock Test | NTA</title>
+    <style>
+        /* === NTA Official Colors === */
+        :root {
+            --nta-blue: #0F4C81;
+            --nta-light-blue: #1A73E8;
+            --nta-red: #E53935;
+            --nta-gray: #F5F5F5;
+            --nta-white: #FFFFFF;
+            --nta-black: #333333;
+        }
+
+        /* === Base Styles === */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--nta-gray);
+            color: var(--nta-black);
+        }
+
+        /* === Header (NTA Style) === */
+        .header {
+            background-color: var(--nta-blue);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            background-color: var(--nta-red);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+        }
+
+        /* === Test Container === */
+        .test-container {
+            display: flex;
+            margin: 20px;
+            gap: 15px;
+        }
+
+        /* === Left Panel (Question Palette) === */
+        .left-panel {
+            width: 20%;
+            background-color: var(--nta-white);
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .section-tab {
+            padding: 8px 15px;
+            background-color: var(--nta-gray);
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+        .section-tab.active {
+            background-color: var(--nta-blue);
+            color: white;
+        }
+
+        .question-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .question-number {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--nta-gray);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .question-number.answered {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .question-number.marked {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        /* === Main Test Area === */
+        .main-test-area {
+            flex: 1;
+            background-color: var(--nta-white);
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: var(--nta-gray);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #E0E0E0;
+        }
+
+        .option.selected {
+            background-color: var(--nta-light-blue);
+            color: white;
+        }
+
+        /* === Navigation Buttons === */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: var(--nta-blue);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #FFC107;
+            color: black;
+        }
+
+        .btn-danger {
+            background-color: var(--nta-red);
+            color: white;
+        }
+
+        /* === Right Panel (Instructions) === */
+        .right-panel {
+            width: 20%;
+            background-color: var(--nta-white);
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions {
+            font-size: 0.9rem;
+        }
+
+        /* === Footer (Submit Button) === */
+        .footer {
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* === Responsive Design === */
+        @media (max-width: 768px) {
+            .test-container {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (NTA Style) -->
+    <div class="header">
+        <div class="logo">JEE Mock Test</div>
+        <div class="timer" id="timer">02:30:00</div>
+    </div>
+
+    <!-- Main Test Container -->
+    <div class="test-container">
+        <!-- Left Panel (Question Palette) -->
+        <div class="left-panel">
+            <div class="section-tabs">
+                <div class="section-tab active">Physics</div>
+                <div class="section-tab">Chemistry</div>
+                <div class="section-tab">Maths</div>
+            </div>
+            <h3>Question Palette</h3>
+            <div class="question-palette" id="questionPalette">
+                <!-- Question numbers will be added by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Test Area -->
+        <div class="main-test-area">
+            <div class="question-text" id="questionText">
+                <p>What is the dimensional formula of Power?</p>
+            </div>
+            <div class="options" id="options">
+                <div class="option" onclick="selectOption(this)">[ML²T⁻³]</div>
+                <div class="option" onclick="selectOption(this)">[MLT⁻²]</div>
+                <div class="option" onclick="selectOption(this)">[ML²T⁻²]</div>
+                <div class="option" onclick="selectOption(this)">[ML⁻¹T⁻²]</div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="btn btn-primary" onclick="prevQuestion()">Previous</button>
+                <button class="btn btn-warning" onclick="markQuestion()">Mark for Review</button>
+                <button class="btn btn-danger" onclick="clearResponse()">Clear Response</button>
+                <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+
+        <!-- Right Panel (Instructions) -->
+        <div class="right-panel">
+            <h3>Instructions</h3>
+            <div class="instructions">
+                <ul>
+                    <li>Total Time: 3 Hours</li>
+                    <li>No negative marking for numerical questions.</li>
+                    <li>You can mark questions for review.</li>
+                    <li>Click "Submit" to finish the test.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (Submit Button) -->
+    <div class="footer">
+        <button class="btn btn-danger" onclick="confirmSubmit()">Submit Test</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Timer Countdown
+        let timeLeft = 2 * 60 * 60 + 30 * 60; // 2 hours 30 minutes
+        const timer = document.getElementById('timer');
+
+        function updateTimer() {
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            timer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert("Time's up! Submitting your test...");
+                submitTest();
+            } else {
+                timeLeft--;
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // Question Palette
+        const questionPalette = document.getElementById('questionPalette');
+        const totalQuestions = 30;
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            const questionNumber = document.createElement('div');
+            questionNumber.className = 'question-number';
+            questionNumber.textContent = i;
+            questionNumber.onclick = function() { goToQuestion(i); };
+            questionPalette.appendChild(questionNumber);
+        }
+
+        // Current Question
+        let currentQuestion = 1;
+
+        function goToQuestion(questionNum) {
+            currentQuestion = questionNum;
+            updateQuestionDisplay();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                updateQuestionDisplay();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                updateQuestionDisplay();
+            }
+        }
+
+        function updateQuestionDisplay() {
+            document.getElementById('questionText').innerHTML = `<p>Question ${currentQuestion}: What is the dimensional formula of Power?</p>`;
+        }
+
+        // Option Selection
+        function selectOption(option) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            
+            // Mark as answered in palette
+            const questionNumbers = document.querySelectorAll('.question-number');
+            questionNumbers[currentQuestion - 1].classList.add('answered');
+        }
+
+        // Mark for Review
+        function markQuestion() {
+            const questionNumbers = document.querySelectorAll('.question-number');
+            questionNumbers[currentQuestion - 1].classList.add('marked');
+        }
+
+        // Clear Response
+        function clearResponse() {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            const questionNumbers = document.querySelectorAll('.question-number');
+            questionNumbers[currentQuestion - 1].classList.remove('answered');
+        }
+
+        // Submit Test
+        function confirmSubmit() {
+            if (confirm("Are you sure you want to submit the test?")) {
+                submitTest();
+            }
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            alert("Test submitted successfully!");
+            // Redirect to results page
+            // window.location.href = "results.html";
+        }
+    </script>
+</body>
+  </html>
