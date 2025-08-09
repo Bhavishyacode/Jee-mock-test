@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock Test with Scorecard</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .question { margin-bottom: 20px; }
+    #scorecard {
+        display: none;
+        padding: 20px;
+        border: 2px solid #333;
+        background: #f8f8f8;
+        max-width: 400px;
+        margin: 20px auto;
+        text-align: center;
+    }
+    #timer { font-size: 18px; margin-bottom: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>Mock Test</h2>
+<div id="timer">Time Left: 10:00</div>
+
+<div class="question">
+    <p>1. A body of mass 2 kg moves with velocity 3 m/s. Its kinetic energy is:</p>
+    <input type="radio" name="q1" value="A"> 3 J<br>
+    <input type="radio" name="q1" value="B"> 6 J<br>
+    <input type="radio" name="q1" value="C"> 9 J<br>
+    <input type="radio" name="q1" value="D" data-correct="true"> 18 J<br>
+</div>
+
+<div class="question">
+    <p>2. The capital of France is:</p>
+    <input type="radio" name="q2" value="A"> Berlin<br>
+    <input type="radio" name="q2" value="B" data-correct="true"> Paris<br>
+    <input type="radio" name="q2" value="C"> Madrid<br>
+    <input type="radio" name="q2" value="D"> Rome<br>
+</div>
+
+<button onclick="submitTest()">Submit</button>
+
+<div id="scorecard">
+    <h3>Scorecard</h3>
+    <p id="result"></p>
+    <p id="breakdown"></p>
+</div>
+
+<script>
+let timerDuration = 600; // 10 minutes in seconds
+let timerInterval = setInterval(updateTimer, 1000);
+
+function updateTimer() {
+    let minutes = Math.floor(timerDuration / 60);
+    let seconds = timerDuration % 60;
+    document.getElementById('timer').innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    if (timerDuration > 0) {
+        timerDuration--;
+    } else {
+        clearInterval(timerInterval);
+        submitTest();
+    }
+}
+
+function submitTest() {
+    clearInterval(timerInterval); // Stop timer
+
+    let questions = document.querySelectorAll('.question');
+    let attempted = 0, correct = 0;
+
+    questions.forEach(q => {
+        let selected = q.querySelector('input[type="radio"]:checked');
+        if (selected) {
+            attempted++;
+            if (selected.dataset.correct === "true") {
+                correct++;
+            }
+        }
+    });
+
+    let incorrect = attempted - correct;
+    let percentage = ((correct / questions.length) * 100).toFixed(2);
+
+    document.getElementById('result').innerText =
+        `Attempted: ${attempted}/${questions.length} | Correct: ${correct} | Incorrect: ${incorrect}`;
+    document.getElementById('breakdown').innerText =
+        `Percentage: ${percentage}%`;
+
+    document.getElementById('scorecard').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
